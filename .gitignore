@@ -1,0 +1,30 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.log
+
+# Large generated training artifacts
+models/
+datasets/packed/
+
+# Hugging Face / ML caches
+.cache/
+huggingface/
+wandb/
+
+concepts/
