@@ -30,7 +30,7 @@ The instruction dataset used for QLoRA is derived separately from the cleaned fi
 
 ### Corpus
 
-The current source corpus contains **10 publicly available financial-domain documents** from RBI and SEBI.
+The current source corpus contains **18 publicly available financial-domain documents** from RBI, SEBI and NPCI.
 
 The corpus covers topics including:
 
@@ -49,9 +49,88 @@ Source PDFs are stored under:
 
 The notebook discovers and processes the available PDF files using relative paths rather than relying on a hardcoded document count.
 
+### Running on Kubeflow (BITS Prayogshala)
+
+Complete these steps in order. Everything (repo clone, `venv`, outputs) lives on one persistent volume mounted at `/home/group157`.
+
+#### 1. Create the notebook server
+
+In Kubeflow go to *Notebooks -> New Notebook* and set:
+
+| Field | Value |
+|---|---|
+| Name | `assignment-1a` |
+| CPU | 7 minimum, 8 maximum |
+| Memory | 15 Gi minimum, 16 Gi maximum |
+| GPUs | 1, vendor NVIDIA |
+| Tolerations group | `NVIDIA A100 GPU Node` |
+| Shared memory | Enabled |
+| Data volumes | None |
+| Other fields (image, advanced options) | Leave at the course defaults |
+
+#### 2. Workspace volume (name and mount)
+
+The workspace volume must be a **new volume named `group157`**, mounted at **`/home/group157`**.
+
+| Field | Value |
+|---|---|
+| Type | New volume |
+| Name | `group157` |
+| Size | 15 Gi |
+| Storage class | `nfs-client` |
+| Access mode | ReadWriteOnce |
+| Mount path | `/home/group157` |
+
+The notebook's setup cell uses `/home/group157`. If you use another name or mount path, change `VOLUME_OVERRIDE` in that cell to match.
+
+#### 3. Clone the repository onto the volume
+
+Open a Terminal in JupyterLab, then:
+
+```bash
+cd /home/group157
+git clone https://github.com/devcoderb/llm-assignment-1a-finance-corpus.git
+```
+
+#### 4. Create the virtual environment on the volume
+
+Run both commands from `/home/group157` so that `./venv` is created at `/home/group157/venv` (about 2-4 minutes the first time):
+
+```bash
+cd /home/group157
+bash llm-assignment-1a-finance-corpus/kubeflow/setup_env.sh
+./venv/bin/python llm-assignment-1a-finance-corpus/kubeflow/check_env.py
+```
+
+`setup_env.sh` installs the pinned course packages and registers the Jupyter kernel `Python (LLM venv)`. After a pod restart the `venv` persists but the kernel registration does not, so re-run the `setup_env.sh` command (it is fast the second time).
+
+#### 5. Link the repository into the JupyterLab folder and open the notebook
+
+JupyterLab's root is the home folder, not `/home/group157`, so link the repo into it:
+
+```bash
+ln -sfn /home/group157/llm-assignment-1a-finance-corpus ~/llm-assignment-1a-finance-corpus
+```
+
+Then in JupyterLab choose *File -> Open from Path...* and enter:
+
+```
+llm-assignment-1a-finance-corpus/Assignment-1a-v5.ipynb
+```
+
+Select the kernel **Python (LLM venv)** and run the cells in order. Outputs (`domain_corpus/`, `cpt_model/`, `qlora_finance_adapter/`, `instruction_dataset*.jsonl`, `cpt_loss.png`) are written to `/home/group157`.
+
+#### 6. Download the deliverables
+
+The last notebook cell (Stage 11C) creates `deliverables.zip` in `/home/group157` with `domain_corpus/*.txt` and `instruction_dataset.jsonl`. Link it into the JupyterLab folder to download it from the file browser:
+
+```bash
+ln -sfn /home/group157/deliverables.zip ~/deliverables.zip
+```
+
 ### Executing the IPYNB Notebook
 
-Open `Assignment-1a.ipynb` and execute the notebook cells in order.
+Open `Assignment-1a-v5.ipynb` and execute the notebook cells in order.
 
 The notebook is designed so that the main processing stages execute sequentially:
 
