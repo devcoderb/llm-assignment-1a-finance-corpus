@@ -26,11 +26,11 @@ At a high level, the pipeline is:
 
 **Financial PDFs → Extraction → Cleaning → Tokenization & Packing → CPT → CPT Evaluation → QLoRA → Final Evaluation → Artifact Verification**
 
-The instruction dataset used for QLoRA is derived separately from the cleaned finance corpus so that CPT and supervised instruction tuning remain distinct stages of the assignment.
+The instruction dataset used for QLoRA is derived separately from the cleaned finance corpus so that CPT and supervised instruction tuning remain distinct stages of the assignment. It holds 1,196 curated question-answer pairs covering all 30 documents (`data/instruction/instruction_dataset_curated.jsonl`), each with its source document and a verbatim evidence span; 98.7% of the evidence spans were found in the cleaned text.
 
 ### Corpus
 
-The current source corpus contains **18 publicly available financial-domain documents** from RBI, SEBI and NPCI.
+The current source corpus contains **30 publicly available financial-domain documents** from RBI, SEBI and NPCI.
 
 The corpus covers topics including:
 
@@ -39,6 +39,8 @@ The corpus covers topics including:
 - Infrastructure Investment Trusts
 - Municipal debt securities
 - Investor protection
+- Mutual funds, takeovers, listing obligations and ICDR rules
+- Asset reconstruction companies, prepaid instruments, payment aggregators and digital lending
 - Digital payments
 - UPI
 - Payment-system benchmarking and development
@@ -115,7 +117,7 @@ ln -sfn /home/group157/llm-assignment-1a-finance-corpus ~/llm-assignment-1a-fina
 Then in JupyterLab choose *File -> Open from Path...* and enter:
 
 ```
-llm-assignment-1a-finance-corpus/Assignment-1a-v5.ipynb
+llm-assignment-1a-finance-corpus/Group157-Assignment-1a.ipynb
 ```
 
 Select the kernel **Python (LLM venv)** and run the cells in order. Outputs (`domain_corpus/`, `cpt_model/`, `qlora_finance_adapter/`, `instruction_dataset*.jsonl`, `cpt_loss.png`) are written to `/home/group157`.
@@ -130,7 +132,7 @@ ln -sfn /home/group157/deliverables.zip ~/deliverables.zip
 
 ### Executing the IPYNB Notebook
 
-Open `Assignment-1a-v5.ipynb` and execute the notebook cells in order.
+Open `Group157-Assignment-1a.ipynb` and execute the notebook cells in order.
 
 The notebook is designed so that the main processing stages execute sequentially:
 
